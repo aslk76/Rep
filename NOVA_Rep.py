@@ -185,7 +185,10 @@ async def on_message(message):
                     for x in positive_rep_comments:
                         #user_in_embed = message.guild.get_member(x[0])
                         #feedback_in_embed = x[1]
-                        positive_str += f"**{message.guild.get_member(x[0]).display_name}**: "
+                        if message.guild.get_member(x[0]) is None:
+                            positive_str += await bot.fetch_user(x[0]).display_name
+                        else:
+                            positive_str += f"**{message.guild.get_member(x[0]).display_name}**: "
                         positive_str += x[1]
                         positive_str += "\n"
                     
@@ -194,7 +197,10 @@ async def on_message(message):
                     for y in negative_rep_comments:
                         #user_in_embed = message.guild.get_member(y[0])
                         #feedback_in_embed = y[1]
-                        negative_str += f"**{message.guild.get_member(y[0]).display_name}**: "
+                        if message.guild.get_member(y[0]) is None:
+                            negative_str += await bot.fetch_user(y[0]).display_name
+                        else:
+                            negative_str += f"**{message.guild.get_member(y[0]).display_name}**: "
                         negative_str += y[1]
                         negative_str += "\n"
                     ###################################################
