@@ -186,7 +186,8 @@ async def on_message(message):
                         #user_in_embed = message.guild.get_member(x[0])
                         #feedback_in_embed = x[1]
                         if message.guild.get_member(x[0]) is None:
-                            positive_str += await bot.fetch_user(x[0]).display_name
+                            non_member_user = await bot.fetch_user(x[0])
+                            positive_str += non_member_user.display_name
                         else:
                             positive_str += f"**{message.guild.get_member(x[0]).display_name}**: "
                         positive_str += x[1]
@@ -198,7 +199,8 @@ async def on_message(message):
                         #user_in_embed = message.guild.get_member(y[0])
                         #feedback_in_embed = y[1]
                         if message.guild.get_member(y[0]) is None:
-                            negative_str += await bot.fetch_user(y[0]).display_name
+                            non_member_user = await bot.fetch_user(y[0])
+                            negative_str += non_member_user.display_name
                         else:
                             negative_str += f"**{message.guild.get_member(y[0]).display_name}**: "
                         negative_str += y[1]
