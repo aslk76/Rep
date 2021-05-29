@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import mysql.connector, time
 from datetime import datetime
 import traceback, logging, json
-#from itertools import cycle
+
 
 running=False
 lottery_tickets= []
@@ -49,7 +49,7 @@ async def on_ready():
     try:
         if running==False:
             await asyncio.sleep (1)
-            print(f'{bot.user.name} {discord.__version__} has connected to Discord!')
+            logging.info(f'{bot.user.name} {discord.__version__} has connected to Discord!')
             guild = get(bot.guilds, id=815104630433775616)
             bot_log_channel = get(guild.text_channels, name='bot-logs')
             embed_bot_log = discord.Embed(title="Info Log.", description=f"{bot.user.name} {discord.__version__} has connected to Discord!",
@@ -187,7 +187,7 @@ async def on_message(message):
                         #feedback_in_embed = x[1]
                         if message.guild.get_member(x[0]) is None:
                             non_member_user = await bot.fetch_user(x[0])
-                            positive_str += non_member_user.display_name
+                            positive_str += f"**{non_member_user.display_name}**: "
                         else:
                             positive_str += f"**{message.guild.get_member(x[0]).display_name}**: "
                         positive_str += x[1]
@@ -200,7 +200,7 @@ async def on_message(message):
                         #feedback_in_embed = y[1]
                         if message.guild.get_member(y[0]) is None:
                             non_member_user = await bot.fetch_user(y[0])
-                            negative_str += non_member_user.display_name
+                            negative_str += f"**{non_member_user.display_name}**: "
                         else:
                             negative_str += f"**{message.guild.get_member(y[0]).display_name}**: "
                         negative_str += y[1]
