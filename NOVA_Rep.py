@@ -489,7 +489,8 @@ async def on_message(message):
     if message.channel.id == 872184309484781598:
         try:
             messageLower = message.content.lower()
-            if messageLower.startswith('repstatus'):
+            await message.delete()
+            if messageLower.startswith('scorestatus'):
                 rep_target= message.author.id
                 #rep_comment = messageLower.partition(">")[2]
                 cnx = mysql.connector.connect(
