@@ -309,7 +309,7 @@ async def on_message(message):
                                 database=DATABASE
                             )
                         cursor = cnx.cursor()
-                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
+                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s, %s)"
                         val = (message.id, rep_target,1,message.author.id,rep_comment)
                         cursor.execute(query,val)
                         cnx.commit()
@@ -336,7 +336,7 @@ async def on_message(message):
                                 database=DATABASE
                             )
                         cursor = cnx.cursor()
-                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
+                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s, %s)"
                         val = (message.id, rep_target,-1,message.author.id,rep_comment)
                         cursor.execute(query,val)
                         cnx.commit()
