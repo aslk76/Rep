@@ -285,7 +285,7 @@ async def on_message(message):
             embed_bot_log.set_footer(text=datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
             await bot_log_channel.send(embed=embed_bot_log)
     ##ADV REPUTATION##
-    if message.channel.id == 873182661735219240:
+    if message.channel.id == 873182661735219240 and not message.author.bot:
         log_channel = get(message.guild.text_channels, id=873182661735219240)
         try:
             messageLower = message.content.lower()
@@ -524,7 +524,7 @@ async def on_message(message):
                     await bot_log_channel.send(embed=embed_bot_log)
         except Exception:
             logging.error(traceback.format_exc())
-    if message.channel.id == 872184309484781598:
+    if message.channel.id == 872184309484781598 and not message.author.bot:
         try:
             messageLower = message.content.lower()
             await message.delete()
