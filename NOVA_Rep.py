@@ -285,15 +285,15 @@ async def on_message(message):
             embed_bot_log.set_footer(text=datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
             await bot_log_channel.send(embed=embed_bot_log)
     ##ADV REPUTATION##
-    if message.channel.id == 872184309484781598:
+    if message.channel.id == 817583077265637437:
         try:
             messageLower = message.content.lower()
             
-            if messageLower.startswith('+rep'):
+            if messageLower.startswith('+score'):
                 
                 if len(message.mentions) == 0:
-                    await message.channel.send("Please make sure you are following the +rep command structure, \n"
-                                    "`+rep @username <feedback>`",delete_after=10)
+                    await message.channel.send("Please make sure you are following the +score command structure, \n"
+                                    "`+score @username <feedback>`",delete_after=10)
                 else:
                     rep_target= message.mentions[0].id
                     rep_comment = messageLower.partition("> ")[2]
@@ -309,17 +309,18 @@ async def on_message(message):
                                 database=DATABASE
                             )
                         cursor = cnx.cursor()
-                        query = "INSERT INTO advertiser_reputation (member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
-                        val = (rep_target,1,message.author.id,rep_comment)
+                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
+                        val = (message.id, rep_target,1,message.author.id,rep_comment)
                         cursor.execute(query,val)
                         cnx.commit()
                         cursor.close()
                         cnx.close()
-                        await message.channel.send("Reputation feedback submitted",delete_after=10)
-            if messageLower.startswith('-rep'):
+                        await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
+                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave +1 to {message.mentions[0]} for {rep_comment}")
+            if messageLower.startswith('-score'):
                 if len(message.mentions) == 0:
-                    await message.channel.send("Please make sure you are following the +rep command structure, \n"
-                                    "`-rep @username <feedback>`")
+                    await message.channel.send("Please make sure you are following the -score command structure, \n"
+                                    "`-score @username <feedback>`")
                 else:
                     rep_target= message.mentions[0].id
                     rep_comment = messageLower.partition("> ")[2]
@@ -335,18 +336,19 @@ async def on_message(message):
                                 database=DATABASE
                             )
                         cursor = cnx.cursor()
-                        query = "INSERT INTO advertiser_reputation (member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
-                        val = (rep_target,-1,message.author.id,rep_comment)
+                        query = "INSERT INTO advertiser_reputation (id, member_id, rep_score, rep_source, rep_comment) VALUES (%s, %s, %s, %s)"
+                        val = (message.id, rep_target,-1,message.author.id,rep_comment)
                         cursor.execute(query,val)
                         cnx.commit()
                         cursor.close()
                         cnx.close()
-                        await message.channel.send("Reputation feedback submitted",delete_after=10)
-            if messageLower.startswith('repstatus'):
+                        await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
+                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave -1 to {message.mentions[0]} for {rep_comment}")
+            if messageLower.startswith('scorestatus'):
                 
                 if len(message.mentions) == 0:
-                    await message.channel.send("Please make sure you are following the +rep command structure, \n"
-                                    "`repStatus @username`")
+                    await message.channel.send("Please make sure you are following the scorestatus command structure, \n"
+                                    "`score @username`")
                 else:
                     rep_target= message.mentions[0].id
                     #rep_comment = messageLower.partition(">")[2]
@@ -484,7 +486,146 @@ async def on_message(message):
                     await bot_log_channel.send(embed=embed_bot_log)
         except Exception:
             logging.error(traceback.format_exc())
-            
+    if message.channel.id == 872184309484781598:
+        try:
+            messageLower = message.content.lower()
+            if messageLower.startswith('repstatus'):
+                rep_target= message.author.id
+                #rep_comment = messageLower.partition(">")[2]
+                cnx = mysql.connector.connect(
+                        host=HOST,
+                        port=DB_PORT,
+                        user=USER,
+                        passwd=PASSWORD,
+                        database=DATABASE
+                    )
+                
+                cursor = cnx.cursor()
+                query = "select COUNT(rep_score) from advertiser_reputation where member_id = %s AND rep_score = 1"
+                val = (rep_target, )
+                cursor.execute(query, val)
+                positive_rep_score = cursor.fetchone()[0]
+                cursor.close()
+                
+                cursor = cnx.cursor()
+                query = "select COUNT(rep_score) from advertiser_reputation where member_id = %s AND rep_score = -1"
+                val = (rep_target, )
+                cursor.execute(query, val)
+                negative_rep_score = cursor.fetchone()[0]
+                cursor.close()
+                
+                cursor = cnx.cursor()
+                query = "select rep_source, rep_comment from advertiser_reputation where member_id = %s and rep_score = 1 ORDER BY rep_date DESC LIMIT 5;"
+                val = (rep_target, )
+                cursor.execute(query, val)
+                positive_rep_comments = cursor.fetchall()
+                cursor.close()
+                
+                cursor = cnx.cursor()
+                query = "select rep_source, rep_comment from advertiser_reputation where member_id = %s and rep_score = -1 ORDER BY rep_date DESC LIMIT 5;"
+                val = (rep_target, )
+                cursor.execute(query, val)
+                negative_rep_comments = cursor.fetchall()
+                cursor.close()
+                
+                cnx.close()
+                
+                user = message.guild.get_member(rep_target)
+                rep_embed=discord.Embed(title="Reputation info", description=user.display_name, color=0x4feb1c)
+                rep_embed.set_thumbnail(url=user.avatar_url)
+                rep_embed.add_field(name="Positive Score: ", value=f"`{positive_rep_score}`", inline=True)
+                rep_embed.add_field(name="Negative Score: ", value=f"`{negative_rep_score}`", inline=True)
+                positive_str = ""
+                
+                for x in positive_rep_comments:
+                    #user_in_embed = message.guild.get_member(x[0])
+                    #feedback_in_embed = x[1]
+                    if message.guild.get_member(x[0]) is None:
+                        non_member_user = await bot.fetch_user(x[0])
+                        positive_str += f"**{non_member_user.display_name}**: "
+                    else:
+                        positive_str += f"**{message.guild.get_member(x[0]).display_name}**: "
+                    positive_str += x[1]
+                    positive_str += "\n"
+                
+                negative_str = ""
+
+                for y in negative_rep_comments:
+                    #user_in_embed = message.guild.get_member(y[0])
+                    #feedback_in_embed = y[1]
+                    if message.guild.get_member(y[0]) is None:
+                        non_member_user = await bot.fetch_user(y[0])
+                        negative_str += f"**{non_member_user.display_name}**: "
+                    else:
+                        negative_str += f"**{message.guild.get_member(y[0]).display_name}**: "
+                    negative_str += y[1]
+                    negative_str += "\n"
+                ###################################################
+                #messages_stats = []
+                #for x in positive_rep_comments:
+                #    user_in_embed = message.guild.get_member(x[0])
+                #    feedback_in_embed = x[1]
+                #    messages_stats.append((f"{user_in_embed.mention}:", f"{feedback_in_embed}"))
+                #positive_str = ""
+                #for ele in messages_stats:
+                #    positive_str += ele[0]
+                #    positive_str += ele[1]
+                #    positive_str += "\n"
+                ###########################################
+                if positive_str == None or positive_str == "":
+                    positive_str = "None"
+                if negative_str == None or negative_str == "":
+                    negative_str = "None"
+                rep_embed.add_field(name="Recent Positive feedback: ", value=positive_str, inline=False)
+                rep_embed.add_field(name="Recent Negative feedback: ", value=negative_str, inline=True)
+                rep_embed.set_footer(text="Timestamp (UTC±00:00): " + datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
+                rep_msg = await message.author.send(embed=rep_embed)
+                #####################################################################
+                #messages_stats = []
+                #for x in positive_rep_comments:
+                #    messages_stats.append((f"Reputation granted by: {message.guild.get_member(x[0]).mention}",f"Feedback: {x[1]}"))
+                #index = 0
+                #msg = None
+                #action = message.channel.send
+                #while True:
+                #    res = await action(content=f"{messages_stats[index][0]}\n{messages_stats[index][1]}")
+                #    if res is not None:
+                #        msg = res
+                #        await msg.add_reaction(left)
+                #       await msg.add_reaction(right)
+                #        await msg.add_reaction(stop)
+                #    l = index != 0
+                #    r = index != len(messages_stats) - 1
+                #    if l:
+                #        await msg.add_reaction(left) 
+                #    if r:
+                #        await msg.add_reaction(right)
+                #    react, user = await bot.wait_for('reaction_add', check=predicate(msg, l, r))
+                #    if react.emoji == left:
+                #        index -= 1
+                #        await msg.remove_reaction(left,user)
+                #        action = msg.edit
+                #    elif react.emoji == right:
+                #        index += 1
+                #        await msg.remove_reaction(right,user)
+                #        action = msg.edit
+                #    elif react.emoji == stop:
+                #        await msg.delete()
+                #####################################################################
+                    
+            else:
+                try:
+                    await bot.process_commands(message)
+                except Exception:
+                    logging.error(traceback.format_exc())
+                    bot_log_channel = get(message.guild.text_channels, name='bot-logs')
+                    embed_bot_log = discord.Embed(title="Error Log.", description="bot process commands", color=0x5d4991)
+                    embed_bot_log.add_field(name="Author", value=message.author.nick, inline=True)
+                    embed_bot_log.add_field(name="Content", value=message.content, inline=False)
+                    embed_bot_log.set_footer(text=datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
+                    await bot_log_channel.send(embed=embed_bot_log)
+        except Exception:
+            logging.error(traceback.format_exc())        
     else:
         try:
             await bot.process_commands(message)
