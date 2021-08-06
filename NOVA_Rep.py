@@ -285,13 +285,13 @@ async def on_message(message):
             embed_bot_log.set_footer(text=datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
             await bot_log_channel.send(embed=embed_bot_log)
     ##ADV REPUTATION##
-    if message.channel.id == 817583077265637437:
+    if message.channel.id == 873182661735219240:
         log_channel = get(message.guild.text_channels, id=873182661735219240)
         try:
             messageLower = message.content.lower()
             
             if messageLower.startswith('+score'):
-                
+                await message.delete()
                 if len(message.mentions) == 0:
                     await message.channel.send("Please make sure you are following the +score command structure, \n"
                                     "`+score @username <feedback>`",delete_after=10)
@@ -320,11 +320,12 @@ async def on_message(message):
                         await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave +1 to {message.mentions[0]} for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
-                                                    f"Reputation feedback submitted with ID **{message.id}**"
+                                                    f"Reputation feedback submitted with ID **{message.id}** "
                                                     f"{message.author.mention} gave +1 to {message.mentions[0]} for {rep_comment}",
                                                 color=discord.Color.orange())
                         await log_channel.send(embed=em)
             if messageLower.startswith('-score'):
+                await message.delete()
                 if len(message.mentions) == 0:
                     await message.channel.send("Please make sure you are following the -score command structure, \n"
                                     "`-score @username <feedback>`")
@@ -353,11 +354,12 @@ async def on_message(message):
                         await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave -1 to {message.mentions[0]} for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
-                                                    f"Reputation feedback submitted with ID **{message.id}**"
+                                                    f"Reputation feedback submitted with ID **{message.id}** "
                                                     f"{message.author.mention} gave -1 to {message.mentions[0]} for {rep_comment}",
                                                 color=discord.Color.orange())
                         await log_channel.send(embed=em)
             if messageLower.startswith('remscore'):
+                await message.delete()
                 cnx = mysql.connector.connect(
                         host=HOST,
                         port=DB_PORT,
@@ -376,7 +378,7 @@ async def on_message(message):
                 await message.author.send(f"Reputation feedback removed with id: {message.id}.")
                 em = discord.Embed(title="Advertiser Reputation deleted",
                                         description=
-                                            f"Reputation feedback removed with ID **{message.id}**"
+                                            f"Reputation feedback removed with ID **{message.id}** "
                                             f"by {message.author.mention}",
                                         color=discord.Color.orange())
                 await log_channel.send(embed=em)
