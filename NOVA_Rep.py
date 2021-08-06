@@ -317,11 +317,11 @@ async def on_message(message):
                         cursor.close()
                         cnx.close()
                         await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
-                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave +1 to {message.mentions[0]} for {rep_comment}")
+                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave +1 to {message.mentions[0].nick} for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
-                                                    f"{message.author.mention} gave +1 to {message.mentions[0]} for {rep_comment}",
+                                                    f"{message.author.mention} gave +1 to {message.mentions[0].nick} for {rep_comment}",
                                                 color=discord.Color.orange())
                         await log_channel.send(embed=em)
             if messageLower.startswith('-score'):
@@ -351,11 +351,11 @@ async def on_message(message):
                         cursor.close()
                         cnx.close()
                         await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
-                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave -1 to {message.mentions[0]} for {rep_comment}")
+                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave -1 to **{message.mentions[0].nick}** for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
-                                                    f"{message.author.mention} gave -1 to {message.mentions[0]} for {rep_comment}",
+                                                    f"{message.author.mention} gave -1 to **{message.mentions[0].nick}** for {rep_comment}",
                                                 color=discord.Color.orange())
                         await log_channel.send(embed=em)
             if messageLower.startswith('remscore'):
