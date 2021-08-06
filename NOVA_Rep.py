@@ -358,32 +358,28 @@ async def on_message(message):
                                                 color=discord.Color.orange())
                         await log_channel.send(embed=em)
             if messageLower.startswith('remscore'):
-                if len(message.mentions) == 0:
-                    await message.channel.send("Please make sure you are following the remscore command structure, \n"
-                                    "`remscore <score_id>`")
-                else:
-                    cnx = mysql.connector.connect(
-                            host=HOST,
-                            port=DB_PORT,
-                            user=USER,
-                            passwd=PASSWORD,
-                            database=DATABASE
-                        )
-                    cursor = cnx.cursor()
-                    query = "DELETE FROM advertiser_reputation where id = %s"
-                    val = (message.id,)
-                    cursor.execute(query,val)
-                    cnx.commit()
-                    cursor.close()
-                    cnx.close()
-                    await message.channel.send(f"Reputation feedback removed with id: {message.id}",delete_after=10)
-                    await message.author.send(f"Reputation feedback removed with id: {message.id}.")
-                    em = discord.Embed(title="Advertiser Reputation deleted",
-                                            description=
-                                                f"Reputation feedback removed with ID **{message.id}**"
-                                                f"by {message.author.mention}",
-                                            color=discord.Color.orange())
-                    await log_channel.send(embed=em)
+                cnx = mysql.connector.connect(
+                        host=HOST,
+                        port=DB_PORT,
+                        user=USER,
+                        passwd=PASSWORD,
+                        database=DATABASE
+                    )
+                cursor = cnx.cursor()
+                query = "DELETE FROM advertiser_reputation where id = %s"
+                val = (message.id,)
+                cursor.execute(query,val)
+                cnx.commit()
+                cursor.close()
+                cnx.close()
+                await message.channel.send(f"Reputation feedback removed with id: {message.id}",delete_after=10)
+                await message.author.send(f"Reputation feedback removed with id: {message.id}.")
+                em = discord.Embed(title="Advertiser Reputation deleted",
+                                        description=
+                                            f"Reputation feedback removed with ID **{message.id}**"
+                                            f"by {message.author.mention}",
+                                        color=discord.Color.orange())
+                await log_channel.send(embed=em)
             if messageLower.startswith('scorestatus'):
                 
                 if len(message.mentions) == 0:
