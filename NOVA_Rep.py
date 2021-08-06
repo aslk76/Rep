@@ -580,6 +580,8 @@ async def on_message(message):
                 rep_embed.add_field(name="Recent Positive feedback: ", value=positive_str, inline=False)
                 rep_embed.add_field(name="Recent Negative feedback: ", value=negative_str, inline=True)
                 rep_embed.set_footer(text="Timestamp (UTC±00:00): " + datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
+                await message.channel.send(f"{message.author.mention}, your score as an advertiser has been sent via DM.", 
+                                delete_after=5)
                 rep_msg = await message.author.send(embed=rep_embed)
                 #####################################################################
                 #messages_stats = []
