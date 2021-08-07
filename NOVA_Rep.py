@@ -317,12 +317,12 @@ async def on_message(message):
                         cursor.close()
                         cnx.close()
                         await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
-                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave +1 to {message.mentions[0].display_name} for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
                                                     f"{message.author.mention} gave +1 to {message.mentions[0].display_name} for {rep_comment}",
                                                 color=discord.Color.orange())
+                        await message.author.send(embed=em)
                         await log_channel.send(embed=em)
             if messageLower.startswith('-score'):
                 await message.delete()
@@ -351,12 +351,12 @@ async def on_message(message):
                         cursor.close()
                         cnx.close()
                         await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
-                        await message.author.send(f"Reputation feedback submitted with id: {message.id}. You gave -1 to **{message.mentions[0].display_name}** for {rep_comment}")
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
                                                     f"{message.author.mention} gave -1 to **{message.mentions[0].display_name}** for {rep_comment}",
                                                 color=discord.Color.orange())
+                        await message.author.send(embed=em)
                         await log_channel.send(embed=em)
             if messageLower.startswith('remscore'):
                 await message.delete()
@@ -375,12 +375,12 @@ async def on_message(message):
                 cursor.close()
                 cnx.close()
                 await message.channel.send(f"Reputation feedback removed with id: {message.id}",delete_after=10)
-                await message.author.send(f"Reputation feedback removed with id: {message.id}.")
                 em = discord.Embed(title="Advertiser Reputation deleted",
                                         description=
                                             f"Reputation feedback removed with ID **{message.id}** "
                                             f"by {message.author.mention}",
                                         color=discord.Color.orange())
+                await message.author.send(embed=em)
                 await log_channel.send(embed=em)
             if messageLower.startswith('scorestatus'):
                 
