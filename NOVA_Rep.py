@@ -320,7 +320,7 @@ async def on_message(message):
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
-                                                    f"{message.author.mention} gave +1 to {message.mentions[0].display_name} for {rep_comment}",
+                                                    f"{message.author.mention} gave +1 to **{message.mentions[0].display_name}** for {rep_comment}",
                                                 color=discord.Color.orange())
                         await message.author.send(embed=em)
                         await log_channel.send(embed=em)
