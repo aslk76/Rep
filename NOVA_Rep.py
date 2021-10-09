@@ -316,7 +316,7 @@ async def on_message(message):
                         cnx.commit()
                         cursor.close()
                         cnx.close()
-                        await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
+                        # await message.channel.send(f"Reputation feedback submitted with id: {message.id}",delete_after=10)
                         em = discord.Embed(title="Advertiser Reputation added",
                                                 description=
                                                     f"Reputation feedback submitted with ID **{message.id}** "
@@ -374,7 +374,7 @@ async def on_message(message):
                 cnx.commit()
                 cursor.close()
                 cnx.close()
-                await message.channel.send(f"Reputation feedback removed with id: {message.id}",delete_after=10)
+                # await message.channel.send(f"Reputation feedback removed with id: {message.id}",delete_after=10)
                 em = discord.Embed(title="Advertiser Reputation deleted",
                                         description=
                                             f"Reputation feedback removed with ID **{message.id}** "
@@ -477,7 +477,7 @@ async def on_message(message):
                     rep_embed.add_field(name="Recent Positive feedback: ", value=positive_str, inline=False)
                     rep_embed.add_field(name="Recent Negative feedback: ", value=negative_str, inline=True)
                     rep_embed.set_footer(text="Timestamp (UTC±00:00): " + datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S"))
-                    rep_msg = await message.channel.send(embed=rep_embed)
+                    await message.author.send(embed=rep_embed)
                     #####################################################################
                     #messages_stats = []
                     #for x in positive_rep_comments:
